@@ -152,6 +152,7 @@ public class Sandbox implements SandboxTemplate, NuklearCallback {
 	 * 
 	 */
 	public void draw(){
+		glClearColor(0.5f, 0.75f, 0.95f, 1.0f);
 		if( m_gui.grid.get(0) == 1 )
 			Primitive.drawGridFloor();
 
