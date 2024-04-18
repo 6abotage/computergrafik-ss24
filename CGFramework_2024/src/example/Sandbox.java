@@ -10,6 +10,14 @@ package example;
  * and use in source and binary forms, with or without modification, requires explicit permission. 
  */
 
+/*
+	CG Sommer 18.04.2024
+	Name, Vorname: Lindlau, Dino
+	Matrikelnummer: 11134650
+	Aufgabenblatt: 01
+	Aufgabe:  02 + 03
+ */
+
 import static org.lwjgl.glfw.GLFW.*;
 import static org.lwjgl.nuklear.Nuklear.*;
 import static org.lwjgl.opengl.GL11.*;
@@ -136,6 +144,9 @@ public class Sandbox implements SandboxTemplate, NuklearCallback {
 	 */
 	public void update( float deltaTime ){
 
+
+		Random random = new Random();
+		glClearColor(random.nextFloat(), random.nextFloat(), random.nextFloat(), random.nextFloat());
 		// Show FPS
 		m_gui.fpsString = "FPS: " + (int)(1 / deltaTime);		
 
@@ -153,8 +164,7 @@ public class Sandbox implements SandboxTemplate, NuklearCallback {
 	 * 
 	 */
 	public void draw(){
-		Random random = new Random();
-		glClearColor(random.nextFloat(), random.nextFloat(), random.nextFloat(), random.nextFloat());
+
 		if( m_gui.grid.get(0) == 1 )
 			Primitive.drawGridFloor();
 
@@ -340,6 +350,9 @@ public class Sandbox implements SandboxTemplate, NuklearCallback {
 
 		int[] indices = { 0, 1, 2 };
 
+		triangleInfo(positions);
+
+
 		int attributeLocation = 0; // has to match the location set in the vertex shader
 		int floatsPerPosition = 3; // x, y and z values per position
 
@@ -352,6 +365,35 @@ public class Sandbox implements SandboxTemplate, NuklearCallback {
 
 		return mesh;
 	}
+
+
+	private void triangleInfo(float[] positions) {
+		Vec3 vecP0 = new Vec3(positions[0], positions[1], positions[2]);
+		Vec3 vecP1 = new Vec3(positions[3], positions[4], positions[5]);
+		Vec3 vecP2 = new Vec3(positions[6], positions[7], positions[8]);
+
+		Vec3 vecP01 = Vec3.sub(vecP1, vecP0);
+		Vec3 vecP02 = Vec3.sub(vecP2, vecP0);
+		Vec3 vecP21 = Vec3.sub(vecP1, vecP2);
+
+		Vec3 normalVec = Vec3.cross(vecP01, vecP02);
+
+		double angle0 = Math.toDegrees(Math.acos((Vec3.dot(vecP01, vecP02)) / (Vec3.length(vecP01) * Vec3.length(vecP02))));
+		double angle1 = Math.toDegrees(Math.acos((Vec3.dot(vecP01, vecP21)) / (Vec3.length(vecP01) * Vec3.length(vecP21))));
+		double angle2 = 180 - Math.toDegrees(Math.acos((Vec3.dot(vecP02, vecP21)) / (Vec3.length(vecP02) * Vec3.length(vecP21))));
+
+		System.out.println("normal x: " + normalVec.x);
+		System.out.println("normal y: " + normalVec.y);
+		System.out.println("normal z: " + normalVec.z);
+		System.out.println("angle 0: " + angle0);
+		System.out.println("angle 1: " + angle1);
+		System.out.println("angle 2: " + angle2);
+		System.out.println("length 01: " + Vec3.length(vecP01));
+		System.out.println("length 02: " + Vec3.length(vecP02));
+		System.out.println("length 21: " + Vec3.length(vecP21));
+
+	}
+
 
 	/**
 	 * Loads a specific obj. file as mesh.
